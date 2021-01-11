@@ -1,0 +1,32 @@
+Package: tjma
+Title: Coleta, Organiza e Analisa Dados do TJMA
+Version: 0.0.0.9001
+Authors@R: 
+    person(given = "Jose",
+           family = "de Jesus Filho",
+           role = c("aut", "cre"),
+           email = "jose@consudata.com.br",
+           comment = c(ORCID = "https://orcid.org/0000-0001-7415-7383"))
+Description: Coleta, organiza e analisa dados processuais do 
+    Tribunal de Justiça do Maranhão.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Language: pt_BR
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Suggests: 
+    roxygen2
+Imports: 
+    rlang (>= 0.1.2),
+    magrittr,
+    stringi,
+    stringr,
+    purrr,
+    dplyr,
+    tidyr,
+    lubridate,
+    httr,
+    xml2,
+    tibble,
+    progress
