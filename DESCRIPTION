@@ -30,3 +30,5 @@ Imports:
     xml2,
     tibble,
     progress
+URL: https://github.com/jjesusfilho/tjma
+BugReports: https://github.com/jjesusfilho/tjma/issues
