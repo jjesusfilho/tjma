@@ -2,58 +2,45 @@
 % Please edit documentation in R/tjma_baixar_cjsg.R
 \name{tjma_baixar_cjsg}
 \alias{tjma_baixar_cjsg}
-\title{Baixa consulta jurisprudencial do TJMA}
+\title{Baixar jurisprudência do TJMA}
 \usage{
 tjma_baixar_cjsg(
-  livre = "",
-  aspas = FALSE,
-  classe = "",
-  assunto = "",
-  orgao_julgador = "",
-  inicio_julg = "",
-  fim_julg = "",
-  inicio_pb = "",
-  fim_pb = "",
-  tipo = "A",
-  n = NULL,
+  chave = "",
+  data_inicio = "",
+  data_fim = "",
+  sistema = "0",
+  relator = "0",
+  revisor = "0",
+  camara = "0",
+  tipo_pesquisa = "1",
   diretorio = "."
 )
 }
 \arguments{
-\item{livre}{palavra ou texto a ser buscado nas ementas e nos acórdãos}
+\item{chave}{Campo busca livre. Se não informado, irá buscar
+palavra "tribunal"}
 
-\item{aspas}{lógico. Colocar a expressão entre aspas?}
+\item{data_inicio}{Data inicial da publicação no formato dd/mm/aaaa}
 
-\item{classe}{Código da classe processual}
+\item{data_fim}{Data final da publicação no formato dd/mm/aaaa}
 
-\item{assunto}{Código do assunto}
+\item{sistema}{ThemisSG ou PGE2G}
 
-\item{orgao_julgador}{Código do órgão julgador}
+\item{relator}{Nome do relator}
 
-\item{inicio_julg}{data inicial julgamento}
+\item{revisor}{Nome do revisor}
 
-\item{fim_julg}{Data final julgamento}
+\item{camara}{Câmara}
 
-\item{inicio_pb}{data inicial registro/publicação}
+\item{tipo_pesquisa}{1 para ementa, 2 para advogado,
+3 para número do acórdão, 4 para número do processo}
 
-\item{fim_pb}{data final registr/publicacao}
-
-\item{tipo}{"A" Para acórdãos, "D" para decisões monocráticas}
-
-\item{n}{Número de páginas}
-
-\item{diretorio}{Diretório onde serão armazenadas as páginas html}
+\item{diretorio}{Diretório onde armazenar os dados}
 }
 \value{
-baixa os htmls das decisões de segunda instância
+As tabelas são convertidas em rds e salvas no
+diretório informado
 }
 \description{
-Baixa consulta jurisprudencial do TJMA
+Baixar jurisprudência do TJMA
 }
-\examples{
-\dontrun{
-baixar_cjsg(livre = "Lei Maria da Penha")
-}
-
-}
-\keyword{tjsp,acórdãos}

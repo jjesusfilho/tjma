@@ -1,162 +1,103 @@
-#' Baixa consulta jurisprudencial do TJMA
+#' Baixar jurisprudência do TJMA
 #'
-#' @param livre palavra ou texto a ser buscado nas ementas e nos acórdãos
-#' @param aspas lógico. Colocar a expressão entre aspas?
-#' @param classe Código da classe processual
-#' @param assunto Código do assunto
-#' @param orgao_julgador Código do órgão julgador
-#' @param inicio_julg  data inicial julgamento
-#' @param fim_julg  Data final julgamento
-#' @param inicio_pb data inicial registro/publicação
-#' @param fim_pb    data final registr/publicacao
-#' @param tipo "A" Para acórdãos, "D" para decisões monocráticas
-#' @param n Número de páginas
-#' @param diretorio Diretório onde serão armazenadas as páginas html
-#' @keywords tjsp,acórdãos
+#' @param chave Campo busca livre. Se não informado, irá buscar
+#'     palavra "tribunal"
+#' @param data_inicio Data inicial da publicação no formato dd/mm/aaaa
+#' @param data_fim Data final da publicação no formato dd/mm/aaaa
+#' @param sistema ThemisSG ou PGE2G
+#' @param relator Nome do relator
+#' @param revisor Nome do revisor
+#' @param camara Câmara
+#' @param tipo_pesquisa 1 para ementa, 2 para advogado,
+#'     3 para número do acórdão, 4 para número do processo
+#' @param diretorio Diretório onde armazenar os dados
 #'
-#' @return baixa os htmls das decisões de segunda instância
+#' @return As tabelas são convertidas em rds e salvas no
+#'     diretório informado
 #' @export
 #'
-#' @examples
-#' \dontrun{
-#' baixar_cjsg(livre = "Lei Maria da Penha")
-#' }
-#'
-tjma_baixar_cjsg <-
-  function(
-        livre = "",
-           aspas = FALSE,
-           classe = "",
-           assunto = "",
-           orgao_julgador = "",
-           inicio_julg = "",
-           fim_julg = "",
-           inicio_pb = "",
-           fim_pb = "",
-           tipo = "A",
-           n = NULL,
-           diretorio = ".") {
-    httr::set_config(httr::config(
-      ssl_verifypeer = FALSE,
-      accept_encoding = "latin1"
-    ))
+tjma_baixar_cjsg <- function(
+  chave = "",
+  data_inicio = "",
+  data_fim = "",
+  sistema = "0",
+  relator = "0",
+  revisor = "0",
+  camara = "0",
+  tipo_pesquisa = "1",
+  diretorio = "."){
 
-    if (aspas == TRUE) livre <- deparse(livre)
+  if (chave == ""){
 
+    chave <-  "tribunal"
 
-    body <-
-      list(
-        dados.buscaInteiroTeor = livre,
-        dados.pesquisarComSinonimos = "S",
-        dados.pesquisarComSinonimos = "S",
-        dados.buscaEmenta = "",
-        dados.nuProcOrigem = "",
-        dados.nuRegistro = "",
-        agenteSelectedEntitiesList = "",
-        contadoragente = "0",
-        contadorMaioragente = "0",
-        codigoCr = "",
-        codigoTr = "",
-        nmAgente = "",
-        juizProlatorSelectedEntitiesList = "",
-        contadorjuizProlator = "0",
-        contadorMaiorjuizProlator = "0",
-        codigoJuizCr = "",
-        codigoJuizTr = "",
-        nmJuiz = "",
-        classesTreeSelection.values = classe,
-        classesTreeSelection.text = "",
-        assuntosTreeSelection.values = assunto,
-        assuntosTreeSelection.text = "",
-        comarcaSelectedEntitiesList = "",
-        contadorcomarca = "0",
-        contadorMaiorcomarca = "0",
-        cdComarca = "",
-        nmComarca = "",
-        secoesTreeSelection.values = orgao_julgador,
-        secoesTreeSelection.text = "",
-        dados.dtJulgamentoInicio = inicio_julg,
-        dados.dtJulgamentoFim = fim_julg,
-        dados.dtRegistroInicio = inicio_pb,
-        dados.dtRegistroFim = fim_pb,
-        dados.origensSelecionadas = "T",
-        tipoDecisaoSelecionados = tipo,
-        dados.ordenacao = "dtPublicacao"
-      )
-
-    a <-
-      httr::POST(
-        "https://consultasaj.tjam.jus.br/cjsg/resultadoCompleta.do",
-        encode = "form",
-        body = body,
-        httr::accept("text/html; charset=latin1;")
-      )
-
-    if (!is.null(n)){
-
-      paginas <- 1:n
-
-      pb <- progress::progress_bar$new(total = n)
-
-
-    } else {
-
-
-      max_pag <- a %>%
-        httr::content() %>%
-        xml2::xml_find_all(xpath = "//*[@id='totalResultadoAba-A']|//*[@id='totalResultadoAba-D']") %>%
-        xml2::xml_attrs() %>%
-        .[[1]] %>%
-        .[3] %>%
-        as.numeric() %>%
-        `/`(10) %>%
-        ceiling()
-
-
-
-      paginas <- 1:max_pag
-
-
-      pb <- progress::progress_bar$new(total = max_pag)
-
-    }
-
-    if (tipo == "A") {
-
-
-      purrr::map(paginas, purrr::possibly(~{
-
-        pb$tick()
-
-        Sys.sleep(1)
-       s<- httr::GET(
-          paste0(
-            "https://consultasaj.tjam.jus.br/cjsg/trocaDePagina.do?tipoDeDecisao=A&pagina=",.x,"&conversationId="
-          ),
-          httr::set_cookies(unlist(a$cookies)),
-          httr::accept("text/html; charset=latin1;"),
-          httr::write_disk(paste0(diretorio, "/pagina_", .x, ".html"),
-                           overwrite = TRUE
-          )
-        )
-      }, NULL))
-    } else {
-      purrr::map(paginas, purrr::possibly(~ {
-
-        pb$tick()
-
-        Sys.sleep(1)
-
-        httr::GET(
-          paste0(
-            "https://consultasaj.tjam.jus.br/cjsg/trocaDePagina.do?tipoDeDecisao=D&pagina=",.x,"&conversationId="
-          ),
-          httr::set_cookies(unlist(a$cookies)),
-          httr::write_disk(paste0(diretorio, "/pagina_", .x, ".html"),
-                           overwrite = TRUE
-          )
-        )
-        # httr::write_disk(paste0(diretorio, "/pagina_", .x,".html"), overwrite = TRUE)
-      }, NULL))
-    }
   }
+
+  if (data_inicio != ""){
+
+    data_inicio <- lubridate::dmy(data_inicio)
+
+    data_fim <- lubridate::dmy(data_fim)
+
+    check_todas_datas <- "1"
+
+  } else {
+
+    check_todas_datas <- "0"
+
+  }
+
+  url <- "https://apijuris.tjma.jus.br/v1/sg/jurisprudencias/processos?sistema=0&relator=0&revisor=0&camara=0&tipoPesquisa=1&chave&condicao=3&dtaInicio=&dtaFim=&checkTodasDatas=0&inicioPagina=1&fimPagina=20"
+
+  parseada <- httr::parse_url(url)
+
+
+  lista <- FALSE
+
+  inicio_pagina <-1
+  fim_pagina <- 20
+
+
+  repeat {
+
+    query <-
+      list(
+        sistema = sistema,
+        relator = relator,
+        revisor = revisor,
+        camara = camara,
+        tipoPesquisa = tipo_pesquisa,
+        chave = chave,
+        condicao = "3",
+        dtaInicio = data_inicio,
+        dtaFim = data_fim,
+        checkTodasDatas = check_todas_datas,
+        inicioPagina = inicio_pagina,
+        fimPagina = fim_pagina
+      )
+
+
+    parseada$query <- query
+
+    url2 <- httr::build_url(parseada)
+
+    d <- jsonlite::fromJSON(url2)
+
+    lista <- rlang::is_empty(d$response)
+
+    if (lista == TRUE){
+      break
+    }
+
+    arquivo <- file.path(diretorio, paste0("cjsg_",inicio_pagina,"_",fim_pagina,".rds"))
+
+    saveRDS(d$response[[1]],arquivo)
+
+    #df <- dplyr::bind_rows(d$response[[1]])
+
+    inicio_pagina <- inicio_pagina + 20
+
+    fim_pagina <- fim_pagina + 20
+
+  }
+}

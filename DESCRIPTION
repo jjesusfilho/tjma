@@ -29,6 +29,7 @@ Imports:
     httr,
     xml2,
     tibble,
-    progress
+    progress,
+    jsonlite
 URL: https://github.com/jjesusfilho/tjma
 BugReports: https://github.com/jjesusfilho/tjma/issues

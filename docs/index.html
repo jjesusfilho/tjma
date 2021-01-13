@@ -47,6 +47,9 @@
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="articles/index.html">Articles</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -83,12 +86,18 @@
 <div id="utilização" class="section level2">
 <h2 class="hasAnchor">
 <a href="#utiliza%C3%A7%C3%A3o" class="anchor"></a>Utilização</h2>
-<p>Por ora, há apenas duas funções para baixar a jurisprudência do TJMA e lê-las, respectivamente.</p>
+<p>Por ora, há apenas uma função para baixar a jurisprudência do TJMA. Ela salva as tabelas em rds. Depois disso, basta ler.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">tjma</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jjesusfilho/tjma">tjma</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://purrr.tidyverse.org">purrr</a></span><span class="op">)</span>
+
 <span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="st">"tjma_cjsg"</span><span class="op">)</span>
+
 <span class="fu"><a href="reference/tjma_baixar_cjsg.html">tjma_baixar_cjsg</a></span><span class="op">(</span>livre <span class="op">=</span> <span class="st">"indígena"</span>, diretorio <span class="op">=</span> <span class="st">"tjma_cjsg"</span><span class="op">)</span>
-<span class="va">cjsg</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tjma_ler_cjsg.html">tjma_ler_cjsg</a></span><span class="op">(</span>diretorio <span class="op">=</span> <span class="st">"tjma_cjsg"</span><span class="op">)</span></code></pre></div>
+
+<span class="va">arquivos</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"tjma_cjsg"</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span>, pattern <span class="op">=</span> <span class="st">"rds$"</span><span class="op">)</span>
+
+<span class="va">cjsg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_dfr</a></span><span class="op">(</span><span class="va">arquivos</span>, <span class="va">readRDS</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
   </div>

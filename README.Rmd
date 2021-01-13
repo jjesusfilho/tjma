@@ -32,12 +32,18 @@ remotes::install_github("jjesusfilho/tjma")
 
 ## Utilização
 
-Por ora, há apenas duas funções para baixar a jurisprudência do TJMA e lê-las, respectivamente.
+Por ora, há apenas uma função  para baixar a jurisprudência do TJMA. Ela salva as tabelas em rds. Depois disso, basta ler.
 
 ```r
 library(tjma)
+library(purrr)
+
 dir.create("tjma_cjsg")
+
 tjma_baixar_cjsg(livre = "indígena", diretorio = "tjma_cjsg")
-cjsg <- tjma_ler_cjsg(diretorio = "tjma_cjsg")
+
+arquivos <- list.files("tjma_cjsg", full.names = TRUE, pattern = "rds$")
+
+cjsg <- map_dfr(arquivos, readRDS)
 ```
 

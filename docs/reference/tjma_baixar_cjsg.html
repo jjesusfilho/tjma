@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Baixa consulta jurisprudencial do TJMA — tjma_baixar_cjsg • tjma</title>
+<title>Baixar jurisprudência do TJMA — tjma_baixar_cjsg • tjma</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Baixa consulta jurisprudencial do TJMA — tjma_baixar_cjsg" />
-<meta property="og:description" content="Baixa consulta jurisprudencial do TJMA" />
+<meta property="og:title" content="Baixar jurisprudência do TJMA — tjma_baixar_cjsg" />
+<meta property="og:description" content="Baixar jurisprudência do TJMA" />
 
 
 
@@ -87,6 +87,9 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../articles/index.html">Articles</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -108,27 +111,24 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Baixa consulta jurisprudencial do TJMA</h1>
+    <h1>Baixar jurisprudência do TJMA</h1>
     <small class="dont-index">Source: <a href='https://github.com/jjesusfilho/tjma/blob/master/R/tjma_baixar_cjsg.R'><code>R/tjma_baixar_cjsg.R</code></a></small>
     <div class="hidden name"><code>tjma_baixar_cjsg.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Baixa consulta jurisprudencial do TJMA</p>
+    <p>Baixar jurisprudência do TJMA</p>
     </div>
 
     <pre class="usage"><span class='fu'>tjma_baixar_cjsg</span><span class='op'>(</span>
-  livre <span class='op'>=</span> <span class='st'>""</span>,
-  aspas <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  classe <span class='op'>=</span> <span class='st'>""</span>,
-  assunto <span class='op'>=</span> <span class='st'>""</span>,
-  orgao_julgador <span class='op'>=</span> <span class='st'>""</span>,
-  inicio_julg <span class='op'>=</span> <span class='st'>""</span>,
-  fim_julg <span class='op'>=</span> <span class='st'>""</span>,
-  inicio_pb <span class='op'>=</span> <span class='st'>""</span>,
-  fim_pb <span class='op'>=</span> <span class='st'>""</span>,
-  tipo <span class='op'>=</span> <span class='st'>"A"</span>,
-  n <span class='op'>=</span> <span class='cn'>NULL</span>,
+  chave <span class='op'>=</span> <span class='st'>""</span>,
+  data_inicio <span class='op'>=</span> <span class='st'>""</span>,
+  data_fim <span class='op'>=</span> <span class='st'>""</span>,
+  sistema <span class='op'>=</span> <span class='st'>"0"</span>,
+  relator <span class='op'>=</span> <span class='st'>"0"</span>,
+  revisor <span class='op'>=</span> <span class='st'>"0"</span>,
+  camara <span class='op'>=</span> <span class='st'>"0"</span>,
+  tipo_pesquisa <span class='op'>=</span> <span class='st'>"1"</span>,
   diretorio <span class='op'>=</span> <span class='st'>"."</span>
 <span class='op'>)</span></pre>
 
@@ -136,65 +136,50 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>livre</th>
-      <td><p>palavra ou texto a ser buscado nas ementas e nos acórdãos</p></td>
+      <th>chave</th>
+      <td><p>Campo busca livre. Se não informado, irá buscar
+palavra "tribunal"</p></td>
     </tr>
     <tr>
-      <th>aspas</th>
-      <td><p>lógico. Colocar a expressão entre aspas?</p></td>
+      <th>data_inicio</th>
+      <td><p>Data inicial da publicação no formato dd/mm/aaaa</p></td>
     </tr>
     <tr>
-      <th>classe</th>
-      <td><p>Código da classe processual</p></td>
+      <th>data_fim</th>
+      <td><p>Data final da publicação no formato dd/mm/aaaa</p></td>
     </tr>
     <tr>
-      <th>assunto</th>
-      <td><p>Código do assunto</p></td>
+      <th>sistema</th>
+      <td><p>ThemisSG ou PGE2G</p></td>
     </tr>
     <tr>
-      <th>orgao_julgador</th>
-      <td><p>Código do órgão julgador</p></td>
+      <th>relator</th>
+      <td><p>Nome do relator</p></td>
     </tr>
     <tr>
-      <th>inicio_julg</th>
-      <td><p>data inicial julgamento</p></td>
+      <th>revisor</th>
+      <td><p>Nome do revisor</p></td>
     </tr>
     <tr>
-      <th>fim_julg</th>
-      <td><p>Data final julgamento</p></td>
+      <th>camara</th>
+      <td><p>Câmara</p></td>
     </tr>
     <tr>
-      <th>inicio_pb</th>
-      <td><p>data inicial registro/publicação</p></td>
-    </tr>
-    <tr>
-      <th>fim_pb</th>
-      <td><p>data final registr/publicacao</p></td>
-    </tr>
-    <tr>
-      <th>tipo</th>
-      <td><p>"A" Para acórdãos, "D" para decisões monocráticas</p></td>
-    </tr>
-    <tr>
-      <th>n</th>
-      <td><p>Número de páginas</p></td>
+      <th>tipo_pesquisa</th>
+      <td><p>1 para ementa, 2 para advogado,
+3 para número do acórdão, 4 para número do processo</p></td>
     </tr>
     <tr>
       <th>diretorio</th>
-      <td><p>Diretório onde serão armazenadas as páginas html</p></td>
+      <td><p>Diretório onde armazenar os dados</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>baixa os htmls das decisões de segunda instância</p>
+    <p>As tabelas são convertidas em rds e salvas no
+diretório informado</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>baixar_cjsg</span><span class='op'>(</span>livre <span class='op'>=</span> <span class='st'>"Lei Maria da Penha"</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
