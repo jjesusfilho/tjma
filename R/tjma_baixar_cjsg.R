@@ -57,6 +57,15 @@ tjma_baixar_cjsg <- function(
   inicio_pagina <-1
   fim_pagina <- 20
 
+df <-   structure(list(NUMCOL = integer(0), strSistema = character(0),
+                 pkProtocolo = character(0), txNumeroAcordao = logical(0),
+                 txAcaoOriginaria = character(0), str_especie_ou_classe = character(0),
+                 txComarca = character(0), txEmenta = character(0), dtAbertura = character(0),
+                 fkCamara = character(0), dtEmentario = character(0), txCamara = character(0),
+                 fkRelator = character(0), txRelator = character(0), dtRegistroAcordao = character(0),
+                 dataAbertura = character(0), hash_documento_pje = character(0),
+                 nome_documento_pje = logical(0)), row.names = integer(0), class = "data.frame")
+
 
   repeat {
 
@@ -77,11 +86,27 @@ tjma_baixar_cjsg <- function(
       )
 
 
+
+
     parseada$query <- query
 
     url2 <- httr::build_url(parseada)
 
-    d <- jsonlite::fromJSON(url2)
+## Por vezes retorna erro de requisição. Quando isso ocorre, atribui um
+## dataframe vazio ao suposto resultado.
+
+d  <-  tryCatch({
+
+    jsonlite::fromJSON(url2)
+
+   }, error = function(e){
+
+    list(response = list(processos = df))
+
+   })
+
+
+  ## Json vazio indica que não há mais páginas.
 
     lista <- rlang::is_empty(d$response)
 
@@ -89,8 +114,22 @@ tjma_baixar_cjsg <- function(
       break
     }
 
-    arquivo <- file.path(diretorio, paste0("cjsg_",inicio_pagina,"_",fim_pagina,".rds"))
 
+
+    if (lubridate::is.Date(data_inicio)){
+
+      d_i <- stringr::str_replace_all(data_inicio,"\\D","_")
+
+      d_f <- stringr::str_replace_all(data_fim,"\\D","_")
+
+    arquivo <- file.path(diretorio, paste0("cjsg_",d_i,"_",d_f,"_paginas_",inicio_pagina,"_",fim_pagina,".rds"))
+
+    } else {
+
+      arquivo <- file.path(diretorio, paste0("cjsg_paginas_",inicio_pagina,"_",fim_pagina,".rds"))
+
+
+}
     saveRDS(d$response[[1]],arquivo)
 
     #df <- dplyr::bind_rows(d$response[[1]])
